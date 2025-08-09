@@ -1,4 +1,5 @@
-from aiogram.types import Message, CallbackQuery, FSInputFile
+import json
+from aiogram.types import Message, CallbackQuery, FSInputFile, ReplyKeyboardRemove
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 import keyboards.user_kb as kb
@@ -60,4 +61,21 @@ async def user_contacts(callback: CallbackQuery):
                                   '▪︎ Сб, Вс.: выходные дни',
                                   reply_markup=await kb.back_to_user_main_btn(),
                                   parse_mode='HTML')    
-            
+
+
+@user.callback_query(F.data == 'user_connection')
+async def user_connection(callback: CallbackQuery):
+    await callback.message.answer('Нажмите на "Открыть" чтобы оставить заявку 👇',
+                                  reply_markup=await kb.connect())
+
+@user.message(F.web_app_data)
+async def get_web_app_data(message: Message):
+    user_data = json.loads(message.web_app_data.data)
+    name = str(user_data['name'])
+    email = str(user_data['email'])
+    phone = str(user_data['phone'])
+    await message.answer('Ваши данные:\n\n'
+                         f'ФИО: {name}\n'
+                         f'Email: {email}\n'
+                         f'Тел: {phone}',
+                         reply_markup=ReplyKeyboardRemove())    

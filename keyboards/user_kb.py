@@ -1,4 +1,5 @@
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.types import WebAppInfo
 
 
 async def user_main_kb():
@@ -26,3 +27,8 @@ async def back_to_user_service_main_btn():
     kb = InlineKeyboardBuilder()
     kb.button(text='назад', callback_data='user_service')
     return kb.as_markup()
+
+async def connect():
+    kb = ReplyKeyboardBuilder()
+    kb.button(text='Open', web_app=WebAppInfo(url='https://geospiderr.loca.lt'))
+    return kb.as_markup(resize_keyboard=True)
