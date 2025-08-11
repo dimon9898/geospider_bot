@@ -30,5 +30,5 @@ async def back_to_user_service_main_btn():
 
 async def connect():
     kb = ReplyKeyboardBuilder()
-    kb.button(text='Open', web_app=WebAppInfo(url='https://geospiderr.loca.lt'))
+    kb.button(text='Открыть', web_app=WebAppInfo(url='https://geospiderr.loca.lt'))
     return kb.as_markup(resize_keyboard=True)

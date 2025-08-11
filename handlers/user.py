@@ -2,6 +2,7 @@ import json
 from aiogram.types import Message, CallbackQuery, FSInputFile, ReplyKeyboardRemove
 from aiogram import Router, F
 from aiogram.filters import CommandStart
+import uuid
 import keyboards.user_kb as kb
 
 user = Router() 
@@ -68,14 +69,27 @@ async def user_connection(callback: CallbackQuery):
     await callback.message.answer('Нажмите на "Открыть" чтобы оставить заявку 👇',
                                   reply_markup=await kb.connect())
 
+
+async def generate_code():
+    code = f'{uuid.uuid4().hex[:8].upper()}'
+    return code
+
+
+
 @user.message(F.web_app_data)
 async def get_web_app_data(message: Message):
     user_data = json.loads(message.web_app_data.data)
-    name = str(user_data['name'])
-    email = str(user_data['email'])
-    phone = str(user_data['phone'])
-    await message.answer('Ваши данные:\n\n'
+    user_id = message.from_user.id
+    name = str(user_data['fullName'])
+    email = str(user_data['emailAddress'])
+    organization = str(user_data['nameOrganization'])
+    phone = str(user_data['phoneNumber'])
+    code = await generate_code()
+    await message.answer('Ваша заявка успешно отправлена! 🎉🎉🎉\n\n'
+                         f'Номер заявки: {code}\n'
+                         f'ID: {user_id}\n'
                          f'ФИО: {name}\n'
+                         f'Организация: {organization}\n'
                          f'Email: {email}\n'
                          f'Тел: {phone}',
                          reply_markup=ReplyKeyboardRemove())    
